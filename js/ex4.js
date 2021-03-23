@@ -1,0 +1,177 @@
+//exercício 1
+document.getElementById("estados").onchange = function() {
+  
+    localStorage.setItem("estado", document.getElementById("estados").value);
+}
+
+
+if(localStorage.estado){
+    document.getElementById("estados").value = localStorage.estado;  
+}
+
+//exercício 2
+
+
+function por_zero (numero) {
+    if (numero < 10){
+        return "0" + numero.toString();
+    } else {
+        return numero.toString();
+    }
+}
+
+function formato (timestamp) {
+    var dia = por_zero(new Date(timestamp).getDate());
+    var mes = por_zero(new Date(timestamp).getMonth() + 1);
+    var ano = por_zero(new Date(timestamp).getFullYear());
+    return dia + "-" + mes + "-" + ano;
+}
+
+
+document.getElementById("confirmar_pedido").onclick = function(){
+var selecionado = document.getElementById("envios").value;
+    
+if(selecionado == "escolha"){
+  alert("Escolha um modelo de envio");
+} else {
+    if(selecionado == "normal"){ 
+        var dias_entrega = 18;
+    } else if (selecionado == "express") {
+        var dias_entrega = 12;
+    }
+
+var envio = new Date().getTime();
+var entrega = envio + (dias_entrega * 86400000);
+
+document.getElementById("data_pedido").innerHTML = formato(envio);
+document.getElementById("data_entrega").innerHTML = formato(entrega);
+}
+    
+
+}
+
+// exercico 3
+
+var iniciado = false, hora_inicio, hora_atual, tempo_passado, init_cronometro, hora, minutos, segundos, millisegundos, resto;
+
+document.getElementById("comecar_parar").onclick = function(){
+    
+    if(!iniciado){
+        iniciado = true;
+        document.getElementById("comecar_parar").innerHTML = "Parar";
+        
+        if(!hora_inicio){
+        hora_inicio = new Date().getTime();    
+        } else {
+            hora_inicio = new Date().getTime() - tempo_passado; 
+        }
+        
+        init_cronometro = window.setInterval(function(){
+            hora_atual = new Date().getTime();
+            tempo_passado = hora_atual - hora_inicio;
+            
+            hora = Math.floor(tempo_passado / 3600000);
+            resto = tempo_passado - (hora * 3600000);
+                        
+            minutos = Math.floor(resto / 60000);
+            resto -= (minutos * 60000);
+                        
+            segundos = Math.floor(resto / 1000);
+            resto -= (segundos * 1000);
+            
+            millisegundos = resto;
+            
+            document.getElementById("cronometro").innerHTML = por_zero(hora) + ":" + por_zero(minutos) + ":" + por_zero(segundos) + " " + por_zero(millisegundos) ;
+            
+        }, 10);
+} else {
+        window.clearInterval(init_cronometro);
+        iniciado = false;
+        document.getElementById("comecar_parar").innerHTML = "Começar";
+}
+
+
+}
+
+document.getElementById("zerar").onclick = function(){
+    tempo_passado = 0;
+    hora_inicio = new Date().getTime();
+    document.getElementById("cronometro").innerHTML = "00:00:00 000";
+}
+
+// exercicio 4
+
+
+    var carros = [
+
+        {
+            'placa': 'AAA-0198',
+            'categoria': '1',
+        },
+
+        {
+            'placa': 'HBP-2837',
+            'categoria': '2',
+        },
+
+        {
+            'placa': 'PLQ-0928',
+            'categoria': '4',
+        },
+
+        {
+            'placa': 'KQE-2093',
+            'categoria': '5',
+        },
+
+        {
+            'placa': 'AMR-9087',
+            'categoria': '5',
+        },
+
+        {
+            'placa': 'BQE-8111',
+            'categoria': '3',
+        },
+
+        {
+            'placa': 'GXL-9001',
+            'categoria': '2',
+        },
+
+        {
+            'placa': 'KPM-7740',
+            'categoria': '1',
+        }
+
+    ];
+
+function valor_a_pagar(veiculo){
+    
+    
+    switch(veiculo.categoria){
+        case "1":
+            return 11.22;
+            break;
+        case "2":
+            return 22.45;
+            break;
+        case "3":
+            return 16.88;
+            break;
+        case "4":
+            return 33.65;
+            break;
+        default:
+            console.log("Veículo de placa " + veiculo.placa + " não fez pagamento por erro de categoria " + veiculo.categoria);
+            return 0;
+    }
+}
+
+var total_arrecadado = 0;
+
+for (var a  = 0; a < carros.length; a++){
+    total_arrecadado += valor_a_pagar(carros[a]);
+}
+
+document.getElementById("faturamento_total").innerHTML = total_arrecadado.toFixed(2);
